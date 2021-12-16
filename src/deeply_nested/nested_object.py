@@ -39,7 +39,7 @@ def paths(data, pathlist=[], parent="", **kwargs):
 class NestedObject:
     def __init__(self, obj=None):
         self._data = obj
-        self._paths = None
+        self._paths = paths(obj)
 
     @property
     def data(self):
@@ -89,7 +89,7 @@ class NestedObject:
         return self._paths
 
     def keys(self):
-        return self._paths
+        return self.paths
 
     def items(self, **kwargs):
         items = [self.get(keypath=k) for k in self.paths]
@@ -104,20 +104,21 @@ class NestedObject:
 if __name__ == "__main__":
     d = NestedObject()
     d.data = './tests/testdata/sample.json'
+    
+    print(d.keys())
+    print(d.get(key='city'))
+    print(d.get(keypath='[5]'))
+    print(d.get(keypath='[i]'))
+    print(len(d.keys()))
+    print(d.items())
 
-    # print(d.get(key='city'))
-    # print(d.get(keypath='[5]'))
-    # print(d.get(keypath='[i]'))
-    # print(len(d.keys()))
-    # print(d.items())
-    # fp = './tests/testdata/sample.json'
-    # with open(fp) as f:
-    #     jdump = json.load(f)
-    #     d = NestedObject(jdump)
-    #     print(d.items())
-        # print(len(d.items()))
-        # print(d.keys())
-        # # st()
-    # del d
-        
-        # st()
+    fp = './tests/testdata/sample.json'
+    d1={}
+    
+    with open(fp) as f:
+        jdump = json.load(f)
+        d1 = NestedObject(jdump)
+        print(d1.items())
+ 
+    del d
+    del d1
