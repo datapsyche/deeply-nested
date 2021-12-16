@@ -26,3 +26,5 @@ print(d2.get(keypath='/k2[i]/a1'))
 # List of tuple with i replaced with length of list in k2 key
 # [('/k2[0]', {'a1': 'v2', 'a2': 'v3'}), ('/k2[1]', {'a1': 'v4', 'a2': 'v5'})]
 ```
+
+Please feel free to raise an issue. This is under active maintainence.
