@@ -55,7 +55,10 @@ class TestNestedObject(unittest.TestCase):
     
     def test_getikeypath(self):
         name_tuple = self.d.get(keypath='[6]/name')
-        self.assertEqual(name_tuple[1], 'Kurtis Weissnat') 
+        self.assertEqual(name_tuple[1], 'Kurtis Weissnat')
+    
+    def test_errorgetikeypath(self):
+        self.assertRaises(KeyError, self.d.get, keypath='[6]/check')
 
     def test_keys(self):
         keys = self.d.keys()

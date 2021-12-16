@@ -2,6 +2,7 @@
 pip installable library to work with deeply nested list or key value structures
 '''
 import json
+from logging import raiseExceptions
 import os
 from pdb import set_trace as st
 
@@ -53,7 +54,7 @@ class NestedObject:
             with open(d) as f:
                 self._data = json.load(f)
         else:
-            raise Exception("Invalid data type, Expecting either dict, list or tuple")
+            raise TypeError("Invalid data type, Expecting either dict, list or a path to json file")
 
     def _getipath(self, keypath, v=[]):
         _tempkp = keypath.split('[i]')[0]
@@ -80,7 +81,9 @@ class NestedObject:
                 v = self._getipath(keypath)
             else:
                 v = get(self._data, dlist=[], path='', keypath=keypath)
-        return v if v else None
+        if not v:
+            raise KeyError(f"{kwargs} not found in Nested Object")
+        return v if v else (None, None)
     
     @property
     def paths(self, **kwargs):
@@ -105,20 +108,20 @@ if __name__ == "__main__":
     d = NestedObject()
     d.data = './tests/testdata/sample.json'
     
-    print(d.keys())
-    print(d.get(key='city'))
-    print(d.get(keypath='[5]'))
-    print(d.get(keypath='[i]'))
-    print(len(d.keys()))
-    print(d.items())
+    # print(d.keys())
+    # print(d.get(key='city'))
+    print(d.get(keypath='[5]/check'))
+    # print(d.get(keypath='[i]'))
+    # print(len(d.keys()))
+    # print(d.items())
 
-    fp = './tests/testdata/sample.json'
-    d1={}
-    
-    with open(fp) as f:
-        jdump = json.load(f)
-        d1 = NestedObject(jdump)
-        print(d1.items())
+    # fp = './tests/testdata/sample.json'
+    # d1={}
+
+    # with open(fp) as f:
+    #     jdump = json.load(f)
+    #     d1 = NestedObject(jdump)
+    #     print(d1.items())
  
-    del d
-    del d1
+    # del d
+    # del d1
