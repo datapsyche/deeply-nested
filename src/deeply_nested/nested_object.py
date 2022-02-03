@@ -2,6 +2,7 @@
 pip installable library to work with deeply nested list or key value structures
 '''
 import json
+from logging import raiseExceptions
 import os
 from pdb import set_trace as st
 
@@ -39,7 +40,7 @@ def paths(data, pathlist=[], parent="", **kwargs):
 class NestedObject:
     def __init__(self, obj=None):
         self._data = obj
-        self._paths = None
+        self._paths = paths(obj)
 
     @property
     def data(self):
@@ -53,7 +54,7 @@ class NestedObject:
             with open(d) as f:
                 self._data = json.load(f)
         else:
-            raise Exception("Invalid data type, Expecting either dict, list or tuple")
+            raise TypeError("Invalid data type, Expecting either dict, list or a path to json file")
 
     def _getipath(self, keypath, v=[]):
         _tempkp = keypath.split('[i]')[0]
@@ -80,7 +81,9 @@ class NestedObject:
                 v = self._getipath(keypath)
             else:
                 v = get(self._data, dlist=[], path='', keypath=keypath)
-        return v if v else None
+        if not v:
+            raise KeyError(f"{kwargs} not found in Nested Object")
+        return v if v else (None, None)
     
     @property
     def paths(self, **kwargs):
@@ -89,7 +92,7 @@ class NestedObject:
         return self._paths
 
     def keys(self):
-        return self._paths
+        return self.paths
 
     def items(self, **kwargs):
         items = [self.get(keypath=k) for k in self.paths]
@@ -104,20 +107,21 @@ class NestedObject:
 if __name__ == "__main__":
     d = NestedObject()
     d.data = './tests/testdata/sample.json'
-
+    
+    # print(d.keys())
     # print(d.get(key='city'))
-    # print(d.get(keypath='[5]'))
+    print(d.get(keypath='[5]/check'))
     # print(d.get(keypath='[i]'))
     # print(len(d.keys()))
     # print(d.items())
+
     # fp = './tests/testdata/sample.json'
+    # d1={}
+
     # with open(fp) as f:
     #     jdump = json.load(f)
-    #     d = NestedObject(jdump)
-    #     print(d.items())
-        # print(len(d.items()))
-        # print(d.keys())
-        # # st()
+    #     d1 = NestedObject(jdump)
+    #     print(d1.items())
+ 
     # del d
-        
-        # st()
+    # del d1
